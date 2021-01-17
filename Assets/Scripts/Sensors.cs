@@ -13,14 +13,17 @@ public class Sensors : MonoBehaviour
 
 
     // Update is called once per frame
-   private void FixedUpdate()
+    private void FixedUpdate()
     {
         SensorArray();
     }
     private void SensorArray()
     {
         RaycastHit hit;
-        Vector3 sensorOrigin = transform.position + frontSensorOrigin;
+        Vector3 sensorOrigin = transform.position;
+        //Moves sensors with car upon rotation
+        sensorOrigin += transform.forward * frontSensorOrigin.z;
+        sensorOrigin += transform.up * frontSensorOrigin.y;
 
         //Front Sensor
         if (Physics.Raycast(sensorOrigin, transform.forward, out hit, sensorRange))
@@ -29,7 +32,7 @@ public class Sensors : MonoBehaviour
         }
 
         //Front Right Sensor
-        sensorOrigin.x += frontOffsetSensorOrigin;
+        sensorOrigin += transform.right * frontOffsetSensorOrigin;
         if (Physics.Raycast(sensorOrigin, transform.forward, out hit, sensorRange))
         {
             Debug.DrawLine(sensorOrigin, hit.point);
@@ -42,7 +45,7 @@ public class Sensors : MonoBehaviour
         }
 
         //Front Left Sensor
-        sensorOrigin.x -= frontOffsetSensorOrigin * 2; //Mulitiplied by 2 to get back to origin, then negative x values
+        sensorOrigin -= transform.right * frontOffsetSensorOrigin * 2; //Mulitiplied by 2 to get back to origin, then negative x values
         if (Physics.Raycast(sensorOrigin, transform.forward, out hit, sensorRange))
         {
             Debug.DrawLine(sensorOrigin, hit.point);
@@ -55,5 +58,4 @@ public class Sensors : MonoBehaviour
         }
 
     }
-
 }

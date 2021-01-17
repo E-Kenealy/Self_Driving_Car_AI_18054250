@@ -25,6 +25,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_a_01
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: f933912e8e263e64da3d1db008039836, type: 3}
+      propertyPath: m_TagString
+      value: Entity
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f933912e8e263e64da3d1db008039836, type: 3}
       propertyPath: m_LocalPosition.x
       value: 495.66336
