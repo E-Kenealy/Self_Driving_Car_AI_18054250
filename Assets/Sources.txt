@@ -1,7 +1,7 @@
 Car: https://free3d.com/3d-model/low-poly-car-40967.html
 Track: https://sketchfab.com/3d-models/race-track-low-poly-1c8633fd04bb4f6d9302f37fcc222afd
 Tutorials: https://www.youtube.com/watch?v=o1XOUkYUDZU&ab_channel=EYEmaginary
-
+Camera Follow Script: http://wiki.unity3d.com/index.php/SmoothFollow2
 
 Rock Texture: https://www.deviantart.com/roskvape/art/Rock-Texture-307459462
 Grass 1 Texture: https://www.pinterest.co.uk/pin/434175220311777176/
@@ -11,3 +11,7 @@ Tree Bark: https://www.pinterest.co.uk/pin/506021708113797558/
 Leaf: https://www.textures.com/download/leaves0158/111329
 Low Poly Foliage: https://assetstore.unity.com/packages/3d/vegetation/low-poly-foliage-66638
 Plastic Barriers: https://www.cgtrader.com/items/2691698/download-page
+
+VIDEO
+Mario Kart Clip: https://www.youtube.com/watch?v=DdBYt0nYtDs&ab_channel=NintendoAddict
+GT 1997, Grid 2, Forza Horizon 3: https://www.youtube.com/watch?v=DcyaLDAPVf4&ab_channel=Nixian

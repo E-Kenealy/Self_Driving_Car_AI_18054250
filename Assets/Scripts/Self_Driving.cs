@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Self_Driving : MonoBehaviour
 {
     //Node path to be drawn
     public Transform path;
+    public float nodeDistance = 0f;
     private List<Transform> nodeList;
     private int currentNode = 0;
 
@@ -34,11 +36,14 @@ public class Self_Driving : MonoBehaviour
     public float maxBrakingTorque = 150f;
 
     [Header("Sensors")]
-    public float frontSensorRange = 5.5f;
-    public float sensorRange = 4.5f;
+    public float frontSensorRange = 7f;
+    public float sensorRange = 6f;
+    public float sideSensorRange = 2.5f;
+   
     public Vector3 frontSensorOrigin = new Vector3(0.0f, 0.2f, 0.5f);
     public float frontOffsetSensorOrigin = 0.45f;
     public float frontAngledSensorTheta = 30f;
+    public float sideSensorTheta = 50f;
 
     private bool avoid = false;
     private float targetAngle = 0f;
@@ -46,6 +51,8 @@ public class Self_Driving : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        new WaitForSeconds(2);
+
         GetComponent<Rigidbody>().centerOfMass = cOM;
 
         Transform[] pathTransforms = path.GetComponentsInChildren<Transform>();
@@ -61,15 +68,28 @@ public class Self_Driving : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     private void FixedUpdate()
     {
+
         SensorArray();
         Turn();
         Drive();
         NodeNear();
         Braking();
         SmoothSteer();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            brake = !brake;
+        }
     }
 
     private void SensorArray()
@@ -80,8 +100,8 @@ public class Self_Driving : MonoBehaviour
         //Moves sensors with car upon rotation
         sensorOrigin += transform.forward * frontSensorOrigin.z;
         sensorOrigin += transform.up * frontSensorOrigin.y;
-       
-        //Sets the state of the car to travel normallyin a straight line every update
+
+        //Sets the state of the car to travel normally in a straight line every update
         float torqueMod = 0f;
         avoid = false;
 
@@ -104,6 +124,17 @@ public class Self_Driving : MonoBehaviour
             {
                 avoid = true;
                 torqueMod -= 0.5f;
+                Debug.DrawLine(sensorOrigin, hit.point);
+            }
+        }
+
+        //Right Angled Sensor
+        else if (Physics.Raycast(sensorOrigin, Quaternion.AngleAxis(sideSensorTheta, transform.up) * transform.forward, out hit, sideSensorRange)) //Creates a sensor to look what is at an angle out in front of the car
+        {
+            if (hit.collider.CompareTag("Entity"))
+            {
+                avoid = true;
+                torqueMod -= 0.4f;
                 Debug.DrawLine(sensorOrigin, hit.point);
             }
         }
@@ -131,6 +162,17 @@ public class Self_Driving : MonoBehaviour
             }
         }
 
+        //Left Angled Sensor
+        else if (Physics.Raycast(sensorOrigin, Quaternion.AngleAxis(-sideSensorTheta, transform.up) * transform.forward, out hit, sideSensorRange)) //Creates a sensor to look what is at an angle out in front of the car
+        {
+            if (hit.collider.CompareTag("Entity"))
+            {
+                avoid = true;
+                torqueMod += 0.4f;
+                Debug.DrawLine(sensorOrigin, hit.point);
+            }
+        }
+
         //Front Sensor
         if (torqueMod == 0)
         {
@@ -139,6 +181,7 @@ public class Self_Driving : MonoBehaviour
                 if (hit.collider.CompareTag("Entity"))
                 {
                     avoid = true;
+
                     if (hit.normal.x < 0) //If the normal of the object is angled to the left of the car...
                     {
                         torqueMod = -1; //...turn the car left to avoid it
@@ -169,6 +212,7 @@ public class Self_Driving : MonoBehaviour
         Vector3 relativeVector = transform.InverseTransformPoint(nodeList[currentNode].position);
         float newSteerAngle = (relativeVector.x / relativeVector.magnitude) * maxTurningAngle;
         targetAngle = newSteerAngle;
+
     }
 
     private void Drive()
@@ -181,6 +225,7 @@ public class Self_Driving : MonoBehaviour
             frontLeftWheel.motorTorque = maxTorque;
             frontRightWheel.motorTorque = maxTorque;
         }
+
         //No power
         else
         {
@@ -192,7 +237,7 @@ public class Self_Driving : MonoBehaviour
     //Checks if close to the node, ready to select the next one
     private void NodeNear()
     {
-        if (Vector3.Distance(transform.position, nodeList[currentNode].position) <= 4.0f) //Adjust this to change how near to node
+        if (Vector3.Distance(transform.position, nodeList[currentNode].position) <= nodeDistance) //Adjust this to change how near to node
         {
             if (currentNode == nodeList.Count - 1) //Checks for last node
             {
@@ -213,7 +258,7 @@ public class Self_Driving : MonoBehaviour
         else
         {
             car.material.mainTexture = notBraking; //Standard car texture
-            backLeftWheel.brakeTorque = 0; //Stops the car  braking
+            backLeftWheel.brakeTorque = 0; //Stops the car braking
             backRightWheel.brakeTorque = 0;
         }
     }

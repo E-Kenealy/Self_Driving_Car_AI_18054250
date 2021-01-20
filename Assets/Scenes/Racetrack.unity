@@ -2054,6 +2054,10 @@ PrefabInstance:
       propertyPath: path
       value: 
       objectReference: {fileID: 2082164164}
+    - target: {fileID: 369801603, guid: 2ee7f9308283d054f91af3cb8e0be473, type: 3}
+      propertyPath: nodeDistance
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3289897391651696550, guid: 2ee7f9308283d054f91af3cb8e0be473, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.39
